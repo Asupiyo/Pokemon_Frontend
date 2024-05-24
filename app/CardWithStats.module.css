@@ -1,5 +1,6 @@
 .card {
   background-color: honeydew;
+    flex-direction: column;
     margin:5px 50% 5px 5px; /* 必要に応じて調整 */
     border-radius: 8px; /* オプションで角を丸める */
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* オプションで影をつける */
