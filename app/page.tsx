@@ -12,7 +12,7 @@ type GiftCardData = {
 };
 
 export default function HomePage() {
-    const [giftCards, setGiftCards] = useState([]);
+    const [giftCards, setGiftCards] = useState<GiftCardData[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function HomePage() {
     return (
         <div className="card">
             {giftCards.map((item) => (
-                <GiftCard {...item} />
+                <GiftCard {...item} key={item.name} />
             ))}
         </div>
     );
