@@ -44,7 +44,7 @@ export default function HomePage() {
     return (
         <div className="card">
             {giftCards.map((item) => (
-                <GiftCard {...item} key={item.name} />
+                <GiftCard {...item} />
             ))}
         </div>
     );
