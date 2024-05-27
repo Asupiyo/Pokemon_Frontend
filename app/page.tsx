@@ -1,38 +1,51 @@
-import { Card, Text, Group } from '@mantine/core';
-import classes from './CardWithStats.module.css';
+'use client';
+
+import axios, { AxiosError } from 'axios';
+import { useState, useEffect } from 'react';
 import GiftCard from '@/app/GiftCard';
 
-const data = [
-    {
-    name: 'あすぴよのスワンナ',
-    photo: 'https://www2.koro-pokemon.com/img2/suwanna.png',
-    password: 'Asupiyosuwannna',
-    dueTo: '2024年11月8日',
-    },
-    {
-    name: 'やばいスリーパー',
-    photo: 'https://img.yakkun.com/poke/icon960/n97.png',
-    password: 'Yabaisleeper',
-    dueTo: '2024年7月21日',
-    },
-    {
-      name: 'かわいいサーナイト',
-      photo: 'https://th.bing.com/th/id/R.d18f1e2b073e3c68324d99acc38e59d0?rik=NV5S41Tz7LiquA&riu=http%3a%2f%2fimg.yakkun.com%2fpoke%2fxy%2fn282.gif&ehk=vB7qeheMuX0Y8cFTGRCVz5BE5WBFJVeYJkemo8MULzs%3d&risl=&pid=ImgRaw&r=0',
-      password: 'r18sernight',
-      dueTo: '2024年11月22日',
-    },
-    ];
+type GiftCardData = {
+    name: string;
+    photo: string;
+    password: string;
+    dueTo: string;
+};
 
 export default function HomePage() {
-    const items = data.map((item) => (
-        <GiftCard {...item} key={item.name} />
-    ));
-return (
-    <>
-        <div className="card">
-        {items}
-        </div>
-    </>
+    const [giftCards, setGiftCards] = useState([]);
+    const [error, setError] = useState<string | null>(null);
 
-);
+    useEffect(() => {
+        const getGiftCards = async () => {
+            try {
+                const response = await axios.get('/api/giftcards');
+                setGiftCards(response.data.data);
+            } catch (errorInCatchBlock) {
+                if (axios.isAxiosError(errorInCatchBlock)) {
+                    console.error(
+                        'APIリクエストでエラーが発生しました:',
+                        errorInCatchBlock.response?.data || 'エラー情報が取得できません'
+                    );
+                    setError(errorInCatchBlock.response?.data?.message || 'エラー情報が取得できません');
+                } else {
+                    console.error('その他エラーが発生しました:', errorInCatchBlock);
+                    setError('その他エラーが発生しました: ' + errorInCatchBlock);
+                }
+            }
+        };
+
+        getGiftCards();
+    }, []);
+
+    if (error) {
+        return <div>エラーが発生しました: {error}</div>;
+    }
+
+    return (
+        <div className="card">
+            {giftCards.map((item) => (
+                <GiftCard {...item} key={item.name} />
+            ))}
+        </div>
+    );
 }
